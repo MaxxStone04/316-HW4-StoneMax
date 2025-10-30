@@ -10,11 +10,34 @@
     @author McKilla Gorilla
 */
 
-import axios from 'axios'
-axios.defaults.withCredentials = true;
-const api = axios.create({
-    baseURL: 'http://localhost:4000/auth',
-})
+const BASE_URL = 'http://localhost:4000/auth'
+
+async function fetchHandler(url, options = {}) {
+    const response = await fetch(`${BASE_URL}${url}`, {
+        creditentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers,
+        },
+        ...options,
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw {
+            status: response.status,
+            data: errorData,
+            response: {
+                data: errorData
+            }
+        };
+    }
+
+    return {
+        status: response.status,
+        data: await response.json()
+    };
+}
 
 // THESE ARE ALL THE REQUESTS WE`LL BE MAKING, ALL REQUESTS HAVE A
 // REQUEST METHOD (like get) AND PATH (like /register). SOME ALSO
@@ -23,23 +46,33 @@ const api = axios.create({
 // WE NEED TO PUT THINGS INTO THE DATABASE OR IF WE HAVE SOME
 // CUSTOM FILTERS FOR QUERIES
 
-export const getLoggedIn = () => api.get(`/loggedIn/`);
+export const getLoggedIn = () => fetchHandler(`/loggedIn/`);
+
 export const loginUser = (email, password) => {
-    return api.post(`/login/`, {
-        email : email,
-        password : password
-    })
+    return fetchHandler(`/login/`, {
+        method: 'POST',
+        body: JSON.stringify({
+            email: email,
+            password: password
+        })
+    });
 }
-export const logoutUser = () => api.get(`/logout/`)
+
+export const logoutUser = () => fetchHandler(`/logout/`)
+
 export const registerUser = (firstName, lastName, email, password, passwordVerify) => {
-    return api.post(`/register/`, {
-        firstName : firstName,
-        lastName : lastName,
-        email : email,
-        password : password,
-        passwordVerify : passwordVerify
-    })
+    return fetchHandler(`/register/`, {
+        method: 'POST',
+        body: JSON.stringify({
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            password: password,
+            passwordVerify: passwordVerify
+        })
+    });
 }
+
 const apis = {
     getLoggedIn,
     registerUser,
@@ -47,4 +80,4 @@ const apis = {
     logoutUser
 }
 
-export default apis
+export default apis;
