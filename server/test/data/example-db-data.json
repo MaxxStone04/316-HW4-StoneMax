@@ -18,6 +18,15 @@
             "playlists": [
                 "68f526c4ec1ea2ad00a6fae8"
             ]
+        },
+        {
+            "firstName": "Max",
+            "lastName": "Stone",
+            "email": "max.stone@stonybrook.edu",
+            "passwordHash": "$2a$10$dPEwsAVi1ojv2RfxxTpZjuKSAbep7zEKb5myegm.ATbQ4sJk4agGu",
+            "playlists": [
+
+            ]
         }
     ],
     "playlists": [
@@ -207,6 +216,484 @@
                     "artist": "The Clash",
                     "year": 1979,
                     "youTubeId": "uEK9oK02D1M"
+                }
+            ]
+        },
+        {
+            "_id": "68f526c4ec1ea2ad00a6faf0",
+            "ownerEmail": "max.stone@stonybrook.edu",
+            "name": "Old Songs I Like",
+            "songs": [
+                {
+                    "title": "I Like It",
+                    "Artist": "Cardi B, Bad Bunny, and J Balvin",
+                    "year": 2018,
+                    "youTubeId": "xTlNMmZKwpA"
+                },
+                {
+                    "title": "La Vie en Rose",
+                    "Artist": "Edith Piaf",
+                    "year": 1947,
+                    "youTubeId": "KZBdgRR85sw"
+                },
+                {
+                    "title": "Hound Dog",
+                    "Artist": "Big Mama Thornton",
+                    "year": 1952,
+                    "youTubeId": "yoHDrzw-RPg"
+                },
+                {
+                    "title": "Johnny B. Goode",
+                    "Artist": "Chuck Berry",
+                    "year": 1958,
+                    "youTubeId": "Y-9Y4CCIWnM"
+                },
+                {
+                    "title": "The House on the Rising Sun",
+                    "Artist": "The Animals",
+                    "year": 1964,
+                    "youTubeId": "4-43lLKaqBQ"
+                },
+                {
+                    "title": "Marrakesh Express",
+                    "Artist": "Crosby, Stills, & Nash",
+                    "year": 1969,
+                    "youTubeId": "0TYq9RjdYYU"
+                },
+                {
+                    "title": "California Dreamin'",
+                    "Artist": "The Mamas & the Papas",
+                    "year": 1965,
+                    "youTubeId": "dN3GbF9Bx6E"
+                },
+                {
+                    "title": "Brown Sugar",
+                    "Artist": "The Rolling Stones",
+                    "year": 1971,
+                    "youTubeId": "Bar7SzNLnY0"
+                },
+                {
+                    "title": "Layla",
+                    "Artist": "Derek & The Dominoes",
+                    "year": 1970,
+                    "youTubeId": "TngViNw2pOo"
+                },
+                {
+                    "title": "Carry on Wayward Son",
+                    "Artist": "Kansas",
+                    "year": 1976,
+                    "youTubeId": "2X_2IdybTV0"
+                },
+                {
+                    "title": "Evil Woman",
+                    "Artist": "ELO",
+                    "year": 1975,
+                    "youTubeId": "nxz1DuVaRr8"
+                },
+                {
+                    "title": "Take The Long Way Home",
+                    "Artist": "Supertramp",
+                    "year": 1979,
+                    "youTubeId": "LPRrHyXchEY"
+                },
+                {
+                    "title": "Pour Some Sugar On Me",
+                    "Artist": "Def Leppard",
+                    "year": 1987,
+                    "youTubeId": "0UIB9Y4OFPs"
+                },
+                {
+                    "title": "Runnin Down A Dream",
+                    "Artist": "Tom Petty & The Heartbreakers",
+                    "year": 1989,
+                    "youTubeId": "Y1D3a5eDJIs"
+                },
+                {
+                    "title": "Hit Me With Your Best Shot",
+                    "Artist": "Pat Benatar",
+                    "year": 1983,
+                    "youTubeId": "IGVZOLV9SPo"
+                },
+                {
+                    "title": "1999",
+                    "Artist": "Prince",
+                    "year": 1982,
+                    "youTubeId": "UWC4X_rTRsA"
+                },
+                {
+                    "title": "Carless Whisper",
+                    "Artist": "George Michael",
+                    "year": 1984,
+                    "youTubeId": "izGwDsrQ1eQ"
+                },
+                {
+                    "title": "Something in the Way",
+                    "Artist": "Nirvana",
+                    "year": 1991,
+                    "youTubeId": "4VxdufqB9zg"
+                },
+                {
+                    "title": "Karma Police",
+                    "Artist": "Radiohead",
+                    "year": 1997,
+                    "youTubeId": "1uYWYWPc9HU"
+                },
+                {
+                    "title": "Welcome to Paradise",
+                    "Artist": "Green Day",
+                    "year": 1991,
+                    "youTubeId": "P0bHAyGhxE8"
+                },
+                {
+                    "title": "Head Over Feet",
+                    "Artist": "Alanis Morisette",
+                    "year": 1995,
+                    "youTubeId": "4iuO49jbovg"
+                },
+                {
+                    "title": "Livin La Vida Loca",
+                    "Artist": "Ricky Martin",
+                    "year": 1999,
+                    "youTubeId": "p47fEXGabaY"
+                },
+                {
+                    "title": "My Immortal",
+                    "Artist": "Evanesence",
+                    "year": 2004,
+                    "youTubeId": "kzaUBvgY9X4"
+                },
+                {
+                    "title": "Last Resort",
+                    "Artist": "Papa Roach",
+                    "year": 2000,
+                    "youTubeId": "j0lSpNtjPM8"
+                },
+                {
+                    "title": "Krpytonite",
+                    "Artist": "3 Doors Down",
+                    "year": 2000,
+                    "youTubeId": "xPU8OAjjS4k"
+                },
+                {
+                    "title": "Poker Face",
+                    "Artist": "Lady Gaga",
+                    "year": 2008,
+                    "youTubeId": "bESGLojNYSo"
+                },
+                {
+                    "title": "Lady Marmalade",
+                    "Artist": "Christina Aguilera, P!nk, Lil' Kim, Mya",
+                    "year": 2001,
+                    "youTubeId": "RQa7SvVCdZk"
+                },
+                {
+                    "title": "Burn It To The Ground",
+                    "Artist": "Nickelback",
+                    "year": 2009,
+                    "youTubeId": "BxgeSv88c2w"
+                },
+                {
+                    "title": "Everytime We Touch",
+                    "Artist": "Cascada",
+                    "year": 2007,
+                    "youTubeId": "4G6QDNC4jPs"
+                },
+                {
+                    "title": "Monster",
+                    "Artist": "Skillet",
+                    "year": 2009,
+                    "youTubeId": "1mjlM_RnsVE"
+                },
+                {
+                    "title": "Cannibal",
+                    "Artist": "Kesha",
+                    "year": 2010,
+                    "youTubeId": "48wHhW_dTMo"
+                },
+                {
+                    "title": "Stereo Hearts",
+                    "Artist": "Gym Class Heroes ft. Adam Levine",
+                    "year": 2011,
+                    "youTubeId": "T3E9Wjbq44E"
+                },
+                {
+                    "title": "My Songs Know What You Did In The Dark",
+                    "Artist": "Fall Out Boy",
+                    "year": 2011,
+                    "youTubeId": "LkIWmsP3c_s"
+                },
+                {
+                    "title": "Hey Mama",
+                    "Artist": "David Guetta ft. Nicki Minaj, Bene Rexha, & Afrojack",
+                    "year": 2014,
+                    "youTubeId": "uO59tfQ2TbA"
+                },
+                {
+                    "title": "Texas is Forever",
+                    "Artist": "Pierce the Veil",
+                    "year": 2016,
+                    "youTubeId": "P0enTUnwR_Q"
+                }
+            ]
+        },
+        {
+            "_id": "68f526c4ec1ea2ad00a6faf1",
+            "ownerEmail": "max.stone@stonybrook.edu",
+            "name": "My Favorite Songs",
+            "songs": [
+                {
+                "title": "The Kill (Bury Me)",
+                "Artist": "Thirty Seconds To Mars",
+                "year": 2005,
+                "youTubeId": "8yvGCAvOAfM"
+                },
+                {
+                    "title": "Pink G-String",
+                    "Artist": "Scene Queen",
+                    "year": 2022,
+                    "youTubeId": "uWGL1Sowdmw"
+                },
+                {
+                    "title": "Dance, Dance",
+                    "Artist": "Fall Out Boy",
+                    "year": 2005,
+                    "youTubeId": "C6MOKXm8x50" 
+                },
+                {
+                    "title": "Rebel Yell",
+                    "Artist": "Billy Idol",
+                    "year": 1983,
+                    "youTubeId": "VdphvuyaV_I"
+                },
+                {
+                    "title": "Decode",
+                    "Artist": "Paramore",
+                    "year": 2008,
+                    "youTubeId": "RvnkAtWcKYg"
+                },
+                {
+                    "title": "Tom Sawyer",
+                    "Artist": "Rush",
+                    "year": 1981,
+                    "youTubeId": "auLBLk4ibAk"
+                },
+                {
+                    "title": "It's Not Over",
+                    "Artist": "Daughtry",
+                    "year": 2009,
+                    "youTubeId": "UQ92eyxnxmQ"
+                },
+                {
+
+                    "title": "Today I Saw The Whole World",
+                    "Artist": "Pierce the Veil",
+                    "year": 2016,
+                    "youTubeId": "ltqXGUHwX6I"
+                },
+                {
+                    "title": "Harder To Breathe",
+                    "Artist": "Maroon 5",
+                    "year": 2002,
+                    "youTubeId": "rV8NHsmVMPE"
+                },
+                {
+                    "title": "The Boy Who Could Fly",
+                    "Artist": "Pierce the Veil",
+                    "year": 2010,
+                    "youTubeId": "zpXxC-v4_J0"
+                },
+                {
+                    "title": "Explode!",
+                    "Artist": "Mother Mother",
+                    "year": 2024,
+                    "youTubeId": "ohvepSu5Yps"
+                },
+                {
+                    "title": "As",
+                    "Artist": "Stevie Wonder",
+                    "year": 1976,
+                    "youTubeId": "GYQfWJNWe3I"
+                },
+                {
+                    "title": "45",
+                    "Artist": "Shinedown",
+                    "year": 2003,
+                    "youTubeId": "MLeIyy2ipps"
+                }, 
+                {
+                    "title": "For a Pessimist, I'm Pretty Optimistic",
+                    "Artist": "Paramore",
+                    "year": 2007,
+                    "youTubeId": "B1o2UCLvD38"
+                },
+                {
+                    "title": "Crazy Train",
+                    "Artist": "Ozzy Osbourne",
+                    "year": 1980,
+                    "youTubeId": "tMDFv5m18Pw"
+                },
+                {
+                    "title": "Chop Suey!",
+                    "Artist": "System of a Down",
+                    "year": 2001,
+                    "youTubeId": "CSvFpBOe8eY" 
+                },
+                {
+                    "title": "Locomotive Breath",
+                    "Artist": "Jethro Tull",
+                    "year": 1971,
+                    "youTubeId": "OyyQ2XRPOnI"
+                },
+                {
+                    "title": "Black Hole Sun",
+                    "Artist": "Soundgarden",
+                    "year": 1994,
+                    "youTubeId": "3mbBbFH9fAg" 
+                },
+                {
+                    "title": "Gimme Shelter",
+                    "Artist": "The Rolling Stones",
+                    "year": 1969,
+                    "youTubeId": "RbmS3tQJ7Os" 
+                },
+                {
+                    "title": "Money for Nothing",
+                    "Artist": "Dire Straits",
+                    "year": 1986,
+                    "youTubeId": "wTP2RUD_cL0"
+                },
+                {
+                    "title": "Cult of Personality",
+                    "Artist": "Living Colour",
+                    "year": 1988,
+                    "youTubeId": "7xxgRUyzgs0"
+                }
+            ]
+        },
+        {
+            "_id": "68f526c4ec1ea2ad00a6faf2",
+            "ownerEmail": "max.stone@stonybrook.edu",
+            "name": "Interesting or Unusual Songs",
+            "songs": [
+                {
+                "title": "When It Rains",
+                "Artist": "Junie & TheHutFriends",
+                "year": 2023,
+                "youTubeId": "5tMEkhvTaM4"
+                },
+                {
+                    "title": "M3chanical C0n-D4mnation",
+                    "Artist": "Phyrmna",
+                    "year": 2018,
+                    "youTubeId": "xocmhF0ZSyI"
+                },
+                {
+                    "title": "The Bottom 2",
+                    "Artist": "Glorb",
+                    "year": 2023,
+                    "youTubeId": "pL9o_BwSN-o"
+                },
+                {
+                    "title": "Atlas, Rise!",
+                    "Artist": "Metallica",
+                    "year": 2016,
+                    "youTubeId": "JFAcOnhcpGA"
+                }, 
+                {
+                    "title": "Shatter",
+                    "Artist": "Code Orange",
+                    "year": 2022,
+                    "youTubeId": "l89VxkNRGEw"
+                },
+                {
+                    "title": "26",
+                    "Artist": "Paramore",
+                    "year": 2017,
+                    "youTubeId": "8Ju7T4J1qbc"
+                },
+                {
+                    "title": "Crystal Clear",
+                    "Artist": "Paramore",
+                    "year": 2020,
+                    "youTubeId": "kzQWCeguH30"
+                },
+                {
+                    "title": "Bulls in the Bronx",
+                    "Artist": "Pierce the Veil",
+                    "year": 2012,
+                    "youTubeId": "WumCI56iYUk"
+                },
+                {
+                    "title": "Casino Royale",
+                    "Artist": "Derivakat",
+                    "year": 2021,
+                    "youTubeId": "MfeXlq3cka8"
+                },
+                {
+                    "title": "EAT ME",
+                    "Artist": "Demi Lovato and Royal & The Serpent",
+                    "year": 2022,
+                    "youTubeId": "zSmvW2sZ3ZU"
+                },
+                {
+                    "title": "Judas",
+                    "Artist": "Fozzy",
+                    "year": 2017,
+                    "youTubeId": "lqURPBtGJzg"
+                },
+                {
+                    "title": "Lonely Boy",
+                    "Artist": "Andrew Gould",
+                    "year": 1977,
+                    "youTubeId": "iq2TxnlWunw"
+                },
+                {
+                    "title": "Slow Ride",
+                    "Artist": "Foghat",
+                    "year": 1975,
+                    "youTubeId": "GcCNcgoyG_0"
+                },
+                {
+                    "title": "Flamingo",
+                    "Artist": "Kenshi Yonezu",
+                    "year": 2018,
+                    "youTubeId": "Uh6dkL1M9DM"
+                },
+                {
+                    "title": "Money",
+                    "Artist": "Pink Floyd",
+                    "year": 1973,
+                    "youTubeId": "-0kcet4aPpQ"
+                },
+                {
+                    "title": "The Girls of Rock and Roll",
+                    "Artist": "Alvin and the Chipmunks",
+                    "year": 1987,
+                    "youTubeId": "kzaUBvgY9X4"
+                },
+                {
+                    "title": "Aqualung",
+                    "Artist": "Jethro Tull",
+                    "year": 1971,
+                    "youTubeId": "N4zPu3ISCGs"
+                },
+                {
+                    "title": "Miseria Cantare - The Beginning",
+                    "Artist": "AFI",
+                    "year": 2003,
+                    "youTubeId": "9EcMH1FTOx0"
+                },
+                {
+                    "title": "That's All",
+                    "Artist": "Genesis",
+                    "year": 1983,
+                    "youTubeId": "Vzyn60Zns-E"
+                },
+                {
+                    "title": "Chemical Kids and Mechanical Brides",
+                    "Artist": "Pierce the Veil",
+                    "year": 2009,
+                    "youTubeId": "9dlbYEOme7E"
                 }
             ]
         }
