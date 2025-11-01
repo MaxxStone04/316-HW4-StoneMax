@@ -33,9 +33,25 @@ async function fetchHandler(url, options = {}) {
         };
     }
 
-    return {
-        status: response.status,
-        data: await response.json()
+    const contentLength = response.headers.get('content-length');
+    if (contentLength === '0' || response.status === 204) {
+        return {
+            status: response.status,
+            data: {}
+        };
+    }
+
+    try {
+        const data = await response.json()
+        return {
+            status: response.status,
+            data: data,
+        };
+    } catch (error) {
+        return {
+            status: response.status,
+            data: {},
+        };
     }
 }
 

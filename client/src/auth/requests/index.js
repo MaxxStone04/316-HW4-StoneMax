@@ -16,7 +16,7 @@ async function fetchHandler(url, options = {}) {
     const response = await fetch(`${BASE_URL}${url}`, {
         credentials: 'include',
         headers: {
-            'Content-Type': 'application/JSON',
+            'Content-Type': 'application/json',
             ...options.headers,
         },
         ...options,
@@ -33,10 +33,27 @@ async function fetchHandler(url, options = {}) {
         };
     }
 
-    return {
-        status: response.status,
-        data: await response.json()
-    };
+    const contentLength = response.headers.get('content-length');
+    if (contentLength === '0' || response.status === 204) {
+        return {
+            status: response.status,
+            data: {}
+        };
+    }
+
+    try {
+        const data = await response.json();
+        return {
+            status: response.status,
+            data: data,
+        };
+    } catch (error) {
+        return {
+            status: response.status,
+            data: {},
+        };
+    }
+    
 }
 
 // THESE ARE ALL THE REQUESTS WE`LL BE MAKING, ALL REQUESTS HAVE A
