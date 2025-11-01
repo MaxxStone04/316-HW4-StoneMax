@@ -14,9 +14,9 @@ const BASE_URL = 'http://localhost:4000/store';
 
 async function fetchHandler(url, options = {}) {
     const response = await fetch(`${BASE_URL}${url}`, {
-        creditentials: 'include',
+        credentials: 'include',
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/JSON',
             ...options.headers,
         },
         ...options
@@ -27,7 +27,7 @@ async function fetchHandler(url, options = {}) {
         throw {
             status: response.status,
             data: errorData,
-            reponse: {
+            response: {
                 data: errorData
             }
         };
