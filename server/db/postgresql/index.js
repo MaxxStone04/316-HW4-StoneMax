@@ -20,7 +20,7 @@ class PostgreSQLManager extends DatabaseManager {
                 host: process.env.DB_HOST || 'localhost',
                 port: process.env.DB_PORT || 5432,
                 dialect: 'postgres',
-                logging: false,
+                logging: process.env.NODE_ENV === 'development' ? console.log : false,
                 pool: {
                     max: 5,
                     min: 0,
@@ -134,6 +134,7 @@ class PostgreSQLManager extends DatabaseManager {
     async deleteUser(id) {
         const user = await this.User.findByPk(id);
         await user.destroy();
+        return user;
     }
 
     /*
@@ -148,7 +149,7 @@ class PostgreSQLManager extends DatabaseManager {
     }
 
     async getPlaylistByOwnerEmail(ownerEmail) {
-        return await this.Playlist.findOne({ where: { ownerEmail } });
+        return await this.Playlist.findAll({ where: { ownerEmail } });
     }
 
     async updatePlaylist(id, updateData) {
@@ -161,6 +162,7 @@ class PostgreSQLManager extends DatabaseManager {
         const playlist = await this.Playlist.findByPk(id);
 
         await playlist.destroy();
+        return playlist;
     }
 
     async getUserPlaylists(userId) {
