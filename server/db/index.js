@@ -13,6 +13,14 @@ class DatabaseManager {
         throw new Error("To be Implemented!");
     }
 
+    async clearDatabase() {
+        throw new Error("To be implemented!");
+    }
+
+    async resetDatabase(testData) {
+        throw new Error("To be implemented!");
+    }
+
     async createUser(userData) {
         throw new Error("To be Implemented!");
     }

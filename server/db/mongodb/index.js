@@ -38,6 +38,36 @@ class MongoDBManager extends DatabaseManager {
         console.log('MongoDB disconnected');
     }
 
+    async clearDatabase() {
+        try {
+            await User.deleteMany({});
+            await Playlist.deleteMany({});
+            console.log('MongoDB database cleared');
+        } catch(error) {
+            console.error('Error clearing MongoDB Database:', error);
+            throw error;
+        }
+    }
+
+    async resetDatabase(testData) {
+        try {
+            await this.clearDatabase();
+
+            for (let userData of testData.users) {
+                await this.createUser(userData);
+            }
+
+            for (let playlistData of testData.playlists) {
+                await this.createPlaylist(playlistData);
+            }
+
+            console.log('MongoDB Database successfully reset with data');
+        } catch (error) {
+            console.error('Error resetting MongoDB Database:', error);
+            throw error;
+        }
+    }
+
     async createUser(userData) {
         const user = new User(userData);
         return await user.save();

@@ -114,6 +114,36 @@ class PostgreSQLManager extends DatabaseManager {
         console.log('PostgreSQL disconnected');
     }
 
+    async clearDatabase() {
+        try {
+            await this.Playlist.destroy({ where: {} });
+            await this.User.destroy({ where: {} });
+            console.log('PostgreSQL Database cleared!');
+        } catch (error) {
+            console.error('Error clearing PostgreSQL Database:', error);
+            throw error;
+        }
+    }
+
+    async resetDatabase(testData) {
+        try {
+            await this.clearDatabase();
+
+            for (let userData of testData.users) {
+                await this.createUser(userData);
+            }
+
+            for (let playlistData of testData.playlists) {
+                await this.createPlaylist(playlistData);
+            }
+
+            console.log('PostgreSQL Database successfully reset with data');
+        } catch (error) {
+            console.error('Error resetting PostgreSQL Database:', error);
+            throw error;
+        }
+    } 
+
     async createUser(userData) {
         return await this.User.create(userData);
     }
