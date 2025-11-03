@@ -1,5 +1,5 @@
 const dotenv = require('dotenv').config({ path: __dirname + '/../../../../.env' });
-const { createDatabaseManager } = require('../../../db');
+const { createDatabaseManager } = require('../../../db/create-Database-Manager');
 const testData = require('../example-db-data.json');
 
 async function resetPostgreSQL() {

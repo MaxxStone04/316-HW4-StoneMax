@@ -1,6 +1,6 @@
 class DatabaseManager {
     constructor() {
-        if (this.construct === DatabaseManager) {
+        if (this.constructor === DatabaseManager) {
             throw new Error("DatabaseManager is an abstract class, so it shouldn't be instantiated");
         }
     }
@@ -70,22 +70,6 @@ class DatabaseManager {
     }
 }
 
-const createDatabaseManager = (databaseType = process.env.DB_TYPE || 'mongodb') => {
-    switch (databaseType.toLowerCase()) {
-        case 'mongodb': 
-            const MongoDBManager = require('./mongodb');
-            return new MongoDBManager();
-        case 'postgresql':
-        case 'postgres':
-            const PostgreSQLManager = require('./postgresql');
-            return new PostgreSQLManager();
-        default:
-            throw new Error(`Unsupported Database Type: ${databaseType}`);
-    }
-};
 
-module.exports = {
-    DatabaseManager,
-    createDatabaseManager
-};
+module.exports = DatabaseManager;
 

@@ -8,29 +8,26 @@ class PostgreSQLManager extends DatabaseManager {
         this.User = null;
         this.Playlist = null;
         this.isConnected = false;
-        this.initializeModels();
     }
 
-    initializeModels() {
-        this.sequelize = new Sequelize(
-            process.env.DB_NAME || 'playlister',
-            process.env.DB_USER || 'postgres',
-            process.env.DB_PASSWORD || 'password',
-            {
-                host: process.env.DB_HOST || 'localhost',
-                port: process.env.DB_PORT || 5432,
-                dialect: 'postgres',
-                logging: process.env.NODE_ENV === 'development' ? console.log : false,
-                pool: {
-                    max: 5,
-                    min: 0,
-                    acquire: 30000,
-                    idle: 10000
-                }
-            }
-        );
+    async initializeModels() {
+        require('dotenv').config({ path: require('path').join(__dirname, '../../../.env') });
 
-        this.User = sequelize.define('User', {
+        const connectionUri = `postgres://${process.env.DB_USER || 'postgres'}:${process.env.DB_PASSWORD || 'password'}@${process.env.DB_HOST || 'localhost'}:${process.env.DB_PORT || 5432}/${process.env.DB_NAME || 'playlister'}`;
+
+        this.sequelize = new Sequelize(connectionUri, {
+            dialect: 'postgres',
+            logging: process.env.NODE_ENV === 'development' ? console.log : false,
+            pool: {
+                max: 5,
+                min: 0,
+                acquire: 30000,
+                idle: 10000
+            }
+        });
+
+
+        this.User = this.sequelize.define('User', {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
@@ -58,7 +55,7 @@ class PostgreSQLManager extends DatabaseManager {
             timestamps: true
         });
 
-        this.Playlist = sequelize.define('Playlist', {
+        this.Playlist = this.sequelize.define('Playlist', {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
@@ -93,6 +90,8 @@ class PostgreSQLManager extends DatabaseManager {
         }
 
         try {
+
+            await this.initializeModels();
             await this.sequelize.authenticate();
             await this.sequelize.sync();
 
@@ -178,7 +177,7 @@ class PostgreSQLManager extends DatabaseManager {
         return await this.Playlist.findByPk(id);
     }
 
-    async getPlaylistByOwnerEmail(ownerEmail) {
+    async getPlaylistsByOwnerEmail(ownerEmail) {
         return await this.Playlist.findAll({ where: { ownerEmail } });
     }
 
@@ -209,7 +208,7 @@ class PostgreSQLManager extends DatabaseManager {
         });
 
         return playlists.map(playlist => ({
-            _id: playlist._id,
+            _id: playlist.id,
             name: playlist.name
         }));
     }
