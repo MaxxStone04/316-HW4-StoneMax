@@ -24,11 +24,22 @@ app.use('/auth', authRouter)
 const storeRouter = require('./routes/store-router')
 app.use('/store', storeRouter)
 
-// INITIALIZE OUR DATABASE OBJECT
-const db = require('./db')
-db.on('error', console.error.bind(console, 'Database connection error:'))
+const { createDabaseManager } = require('./db');
+const dbManager = createDabaseManager();
 
-// PUT THE SERVER IN LISTENING MODE
-app.listen(PORT, () => console.log(`Playlister Server running on port ${PORT}`))
+dbManager.connect()
+    .then(() => {
+        console.log('Database connected successfully');
+
+        app.listen(PORT, () => console.log(`Playlister Server running on port ${PORT}`))
+    })
+    .catch(error => {
+        console.error('Database connection error:', error)
+        process.exit(1)
+    })
+
+module.exports = { app, dbManager };
+
+
 
 
