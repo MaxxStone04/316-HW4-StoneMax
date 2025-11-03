@@ -13,9 +13,12 @@ class PostgreSQLManager extends DatabaseManager {
     async initializeModels() {
         require('dotenv').config({ path: require('path').join(__dirname, '../../../.env') });
 
-        const connectionUri = `postgres://${process.env.DB_USER || 'postgres'}:${process.env.DB_PASSWORD || 'password'}@${process.env.DB_HOST || 'localhost'}:${process.env.DB_PORT || 5432}/${process.env.DB_NAME || 'playlister'}`;
-
-        this.sequelize = new Sequelize(connectionUri, {
+        const postgresConfig = {
+            database: process.env.POSTGRES_DB || 'playlister',
+            username: process.env.POSTGRES_USER || 'postgres',
+            password: process.env.POSTGRES_PASSWORD || 'password',
+            host: process.env.POSTGRES_HOST || 'localhost',
+            port: process.env.POSTGRES_PORT || 5432,
             dialect: 'postgres',
             logging: process.env.NODE_ENV === 'development' ? console.log : false,
             pool: {
@@ -24,7 +27,9 @@ class PostgreSQLManager extends DatabaseManager {
                 acquire: 30000,
                 idle: 10000
             }
-        });
+        };
+
+        this.sequelize = new Sequelize(postgresConfig);
 
 
         this.User = this.sequelize.define('User', {

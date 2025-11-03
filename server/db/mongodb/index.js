@@ -15,7 +15,7 @@ class MongoDBManager extends DatabaseManager {
         }
 
         try {
-            await mongoose.connect(process.env.DB_CONNECT, {
+            await mongoose.connect(process.env.MONGO_CONNECT, {
                 useNewUrlParser: true,
                 useUnifiedTopology: true
             });

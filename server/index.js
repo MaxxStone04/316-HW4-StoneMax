@@ -25,7 +25,7 @@ const storeRouter = require('./routes/store-router')
 app.use('/store', storeRouter)
 
 const { createDabaseManager } = require('./db/create-Database-Manager');
-const dbManager = createDabaseManager();
+const dbManager = createDabaseManager(process.env.DB_TYPE);
 
 dbManager.connect()
     .then(() => {
