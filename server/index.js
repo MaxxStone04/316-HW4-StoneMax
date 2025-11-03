@@ -24,7 +24,7 @@ app.use('/auth', authRouter)
 const storeRouter = require('./routes/store-router')
 app.use('/store', storeRouter)
 
-const { createDabaseManager } = require('./db');
+const { createDabaseManager } = require('./db/create-Database-Manager');
 const dbManager = createDabaseManager();
 
 dbManager.connect()
