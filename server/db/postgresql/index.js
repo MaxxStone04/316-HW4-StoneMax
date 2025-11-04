@@ -166,50 +166,85 @@ class PostgreSQLManager extends DatabaseManager {
         }
     } 
 
-    async createUser(userData) {
-        await this.ensureInitialized();
-        const { _id, ...translatedData } = userData;
-        return await this.User.create(translatedData);
-    }
-
-    async getUserById(id) {
-        await this.ensureInitialized();
-        if (typeof id === 'string' && /^[0-9a-fA-F]{24}$/.test(id)) {
+    convertPlaylist(playlist) {
+        if (!playlist) {
             return null;
         }
 
-        return await this.User.findByPk(id);
+        const playlistData = playlist.dataValues ? playlist.dataValues : playlist;
+
+        return {
+            _id: playlistData.id.toString(),
+            name: playlistData.name,
+            ownerEmail: playlistData.ownerEmail,
+            songs: playlistData.songs,
+            createdAt: playlistData.createdAt,
+            updatedAt: playlistData.updatedAt
+        };
     }
 
-    async getUserByEmail(email) {
-        await this.ensureInitialized();
-        return await this.User.findOne({ where: { email } });
-    }
-
-    async getUserByMongoId(mongoId) {
-        await this.ensureInitialized();
-        return null;
-    }
-
-    async updateUser(id, updateData) {
-        await this.ensureInitialized();
-        const user = await this.User.findByPk(id);
+    convertUser(user) {
         if (!user) {
             return null;
         }
 
-        return await user.update(updateData);
+        const userData = user.dataValues ? user.dataValues : user;
+
+        return {
+            _id: userData.id.toString(),
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            email: userData.email,
+            passwordHash: userData.passwordHash,
+            createdAt: userData.createdAt,
+            updatedAt: userData.updatedAt
+        };
+    }
+
+
+    async createUser(userData) {
+        await this.ensureInitialized();
+        const { _id, ...translatedData } = userData;
+        const user = await this.User.create(translatedData);
+        return this.convertUser(user);
+    }
+
+    async getUserById(id) {
+        await this.ensureInitialized();
+        const userId = typeof id === 'string' ? parseInt(id) : id;
+        const user = await this.User.findByPk(userId);
+        return this.convertUser(user);
+    }
+
+    async getUserByEmail(email) {
+        await this.ensureInitialized();
+        const user = await this.User.findOne({ where: { email } });
+        return this.convertUser(user);
+    }
+
+    async updateUser(id, updateData) {
+        await this.ensureInitialized();
+        const userId = typeof id === 'string' ? parseInt(id) : id;
+        const user = await this.User.findByPk(userId);
+        if (!user) {
+            return null;
+        }
+
+        await user.update(updateData);
+
+        return this.convertUser(user);
     }
 
     async deleteUser(id) {
         await this.ensureInitialized();
-        const user = await this.User.findByPk(id);
+        const userId = typeof id === 'string' ? parseInt(id) : id;
+        const user = await this.User.findByPk(userId);
         if (!user) {
             return null;
         }
 
         await user.destroy();
-        return user;
+        return this.convertUser(user);
     }
 
     /*
@@ -218,38 +253,44 @@ class PostgreSQLManager extends DatabaseManager {
     async createPlaylist(playlistData) {
         await this.ensureInitialized();
         const { _id, ...translatedPlaylistData } = playlistData;
-        return await this.Playlist.create(translatedPlaylistData);
+        const playlist = await this.Playlist.create(translatedPlaylistData);
+        return this.convertPlaylist(playlist);
     }
 
     async getPlaylistById(id) {
         await this.ensureInitialized();
-        return await this.Playlist.findByPk(id);
+        const playlistId = typeof id === 'string' ? parseInt(id) : id;
+        const playlist = await this.Playlist.findByPk(playlistId);
+        return this.convertPlaylist(playlist);
     }
 
     async getPlaylistsByOwnerEmail(ownerEmail) {
         await this.ensureInitialized();
-        return await this.Playlist.findAll({ where: { ownerEmail } });
+        const playlists = await this.Playlist.findAll({ where: { ownerEmail } });
+        return playlists.map(playlist => this.convertPlaylist(playlist));
     }
 
     async updatePlaylist(id, updateData) {
         await this.ensureInitialized();
-        const playlist = await this.Playlist.findByPk(id);
+        const playlistId = typeof id === 'string' ? parseInt(id) : id;
+        const playlist = await this.Playlist.findByPk(playlistId);
         if (!playlist) {
             return null;
         }
-
-        return await playlist.update(updateData);
+        await playlist.update(updateData);
+        await playlist.reload();
+        return this.convertPlaylist(playlist);
     }
 
     async deletePlaylist(id) {
         await this.ensureInitialized();
-        const playlist = await this.Playlist.findByPk(id);
+        const playlistId = typeof id === 'string' ? parseInt(id) : id;
+        const playlist = await this.Playlist.findByPk(playlistId);
         if (!playlist) {
             return null;
         }
-        
         await playlist.destroy();
-        return playlist;
+        return this.convertPlaylist(playlist);
     }
 
     async getUserPlaylists(userId) {
@@ -257,7 +298,7 @@ class PostgreSQLManager extends DatabaseManager {
         const user = await this.User.findByPk(userId, {
             include: [this.Playlist]
         });
-        return user ? user.Playlists : [];
+        return user ? user.Playlists.map(playlist => this.convertPlaylist(playlist)) : [];
     }
 
     async getPlaylistPairsByOwnerEmail(ownerEmail) {
@@ -268,12 +309,10 @@ class PostgreSQLManager extends DatabaseManager {
                 attributes: ['id', 'name']
             });
 
-            const result = playlists.map(playlist => ({
-                _id: playlist.id,
+            return playlists.map(playlist => ({
+                _id: playlist.id.toString(),
                 name: playlist.name
             }));
-
-            return result;
         } catch (error) {
             console.error('Error in getPlaylistPairsByOwnerEmail:', error);
             throw error;
