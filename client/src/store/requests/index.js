@@ -81,6 +81,7 @@ export const getPlaylistById = (id) => fetchHandler(`/playlist/${id}`);
 export const getPlaylistPairs = () => fetchHandler(`/playlistpairs/`);
 
 export const updatePlaylistById = (id, playlist) => {
+    console.log("Updating playlist with ID:", id);
     return fetchHandler(`/playlist/${id}`, {
         method: 'PUT',
         body: JSON.stringify({
