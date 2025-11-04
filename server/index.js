@@ -24,19 +24,21 @@ app.use('/auth', authRouter)
 const storeRouter = require('./routes/store-router')
 app.use('/store', storeRouter)
 
-const { createDabaseManager } = require('./db/create-Database-Manager');
-const dbManager = createDabaseManager(process.env.DB_TYPE);
+const { createDatabaseManager } = require('./db/create-Database-Manager');
+const dbManager = createDatabaseManager(process.env.DB_TYPE);
 
-dbManager.connect()
-    .then(() => {
-        console.log('Database connected successfully');
+async function serverStart() {
+    try {
+        await dbManager.connect();
+        
+        app.listen(PORT, () => console.log(`Playlister Server running on port ${PORT}`));
+    } catch (error) {
+        console.error('Database connection error:', error);
+        process.exit(1);
+    }
+}
 
-        app.listen(PORT, () => console.log(`Playlister Server running on port ${PORT}`))
-    })
-    .catch(error => {
-        console.error('Database connection error:', error)
-        process.exit(1)
-    })
+serverStart(); 
 
 module.exports = { app, dbManager };
 

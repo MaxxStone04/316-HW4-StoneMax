@@ -1,5 +1,6 @@
 const DatabaseManager = require('../index');
 const { Sequelize, DataTypes } = require('sequelize');
+const path = require('path');
 
 class PostgreSQLManager extends DatabaseManager {
     constructor() {
@@ -8,10 +9,14 @@ class PostgreSQLManager extends DatabaseManager {
         this.User = null;
         this.Playlist = null;
         this.isConnected = false;
+        this.isInitialized = false;
+        this.initializationPromise = null;
     }
 
     async initializeModels() {
-        require('dotenv').config({ path: require('path').join(__dirname, '../../../.env') });
+        if (this.isInitialized) {
+            return;
+        }
 
         const postgresConfig = {
             database: process.env.POSTGRES_DB || 'playlister',
@@ -87,6 +92,17 @@ class PostgreSQLManager extends DatabaseManager {
         this.User.hasMany(this.Playlist, { foreignKey: 'ownerEmail', sourceKey: 'email' });
 
         this.Playlist.belongsTo(this.User, { foreignKey: 'ownerEmail', targetKey: 'email' });
+
+        this.isInitialized = true;
+    }
+
+    async ensureInitialized() {
+        if (!this.isInitialized) {
+            if (!this.initializationPromise) {
+                this.initializationPromise = this.initializeModels();
+            }
+            await this.initializationPromise;
+        }
     }
 
     async connect() {
@@ -115,11 +131,13 @@ class PostgreSQLManager extends DatabaseManager {
 
         await this.sequelize.close();
         this.isConnected = false;
+        this.isInitialized = false;
         console.log('PostgreSQL disconnected');
     }
 
     async clearDatabase() {
         try {
+            await this.ensureInitialized();
             await this.Playlist.destroy({ where: {} });
             await this.User.destroy({ where: {} });
             console.log('PostgreSQL Database cleared!');
@@ -149,24 +167,47 @@ class PostgreSQLManager extends DatabaseManager {
     } 
 
     async createUser(userData) {
-        return await this.User.create(userData);
+        await this.ensureInitialized();
+        const { _id, ...translatedData } = userData;
+        return await this.User.create(translatedData);
     }
 
     async getUserById(id) {
+        await this.ensureInitialized();
+        if (typeof id === 'string' && /^[0-9a-fA-F]{24}$/.test(id)) {
+            return null;
+        }
+
         return await this.User.findByPk(id);
     }
 
     async getUserByEmail(email) {
+        await this.ensureInitialized();
         return await this.User.findOne({ where: { email } });
     }
 
+    async getUserByMongoId(mongoId) {
+        await this.ensureInitialized();
+        return null;
+    }
+
     async updateUser(id, updateData) {
+        await this.ensureInitialized();
         const user = await this.User.findByPk(id);
+        if (!user) {
+            return null;
+        }
+
         return await user.update(updateData);
     }
 
     async deleteUser(id) {
+        await this.ensureInitialized();
         const user = await this.User.findByPk(id);
+        if (!user) {
+            return null;
+        }
+
         await user.destroy();
         return user;
     }
@@ -175,31 +216,44 @@ class PostgreSQLManager extends DatabaseManager {
     * Playlist Methods
     */
     async createPlaylist(playlistData) {
-        return await this.Playlist.create(playlistData);
+        await this.ensureInitialized();
+        const { _id, ...translatedPlaylistData } = playlistData;
+        return await this.Playlist.create(translatedPlaylistData);
     }
 
     async getPlaylistById(id) {
+        await this.ensureInitialized();
         return await this.Playlist.findByPk(id);
     }
 
     async getPlaylistsByOwnerEmail(ownerEmail) {
+        await this.ensureInitialized();
         return await this.Playlist.findAll({ where: { ownerEmail } });
     }
 
     async updatePlaylist(id, updateData) {
+        await this.ensureInitialized();
         const playlist = await this.Playlist.findByPk(id);
+        if (!playlist) {
+            return null;
+        }
 
         return await playlist.update(updateData);
     }
 
     async deletePlaylist(id) {
+        await this.ensureInitialized();
         const playlist = await this.Playlist.findByPk(id);
-
+        if (!playlist) {
+            return null;
+        }
+        
         await playlist.destroy();
         return playlist;
     }
 
     async getUserPlaylists(userId) {
+        await this.ensureInitialized();
         const user = await this.User.findByPk(userId, {
             include: [this.Playlist]
         });
@@ -207,15 +261,23 @@ class PostgreSQLManager extends DatabaseManager {
     }
 
     async getPlaylistPairsByOwnerEmail(ownerEmail) {
-        const playlists = await this.Playlist.findAll({
-            where: { ownerEmail },
-            attributes: ['id', 'name']
-        });
+        await this.ensureInitialized();
+        try {
+            const playlists = await this.Playlist.findAll({
+                where: { ownerEmail },
+                attributes: ['id', 'name']
+            });
 
-        return playlists.map(playlist => ({
-            _id: playlist.id,
-            name: playlist.name
-        }));
+            const result = playlists.map(playlist => ({
+                _id: playlist.id,
+                name: playlist.name
+            }));
+
+            return result;
+        } catch (error) {
+            console.error('Error in getPlaylistPairsByOwnerEmail:', error);
+            throw error;
+        }
     }
 }
 

@@ -1,9 +1,7 @@
 const auth = require('../auth')
 const bcrypt = require('bcryptjs')
-
-const { createDatabaseManager } = require('../db');
+const { createDatabaseManager } = require('../db/create-Database-Manager'); // Fixed import path
 const dbManager = createDatabaseManager();
-
 
 getLoggedIn = async (req, res) => {
     try {
@@ -18,6 +16,14 @@ getLoggedIn = async (req, res) => {
 
         const loggedInUser = await dbManager.getUserById(userId);
         console.log("loggedInUser: " + loggedInUser);
+
+        if (!loggedInUser) {
+            return res.status(200).json({
+                loggedIn: false,
+                user: null,
+                errorMessage: "User not found"
+            })
+        }
 
         return res.status(200).json({
             loggedIn: true,
@@ -45,7 +51,7 @@ loginUser = async (req, res) => {
         }
 
         const existingUser = await dbManager.getUserByEmail(email);
-        console.log("existingUser: " + existingUser);
+        console.log("existingUser: ", existingUser); // Use comma for better logging
         if (!existingUser) {
             return res
                 .status(401)
@@ -66,8 +72,23 @@ loginUser = async (req, res) => {
         }
 
         // LOGIN THE USER
-        const token = auth.signToken(existingUser._id);
-        console.log(token);
+        // Get the user ID based on database type
+        let userId;
+        if (existingUser._id) {
+            // MongoDB
+            userId = existingUser._id;
+        } else if (existingUser.id) {
+            // PostgreSQL
+            userId = existingUser.id;
+        } else {
+            throw new Error("Could not find user ID");
+        }
+
+        console.log("User ID to sign token:", userId);
+        
+        // FIX: Pass the userId variable, not existingUser._id
+        const token = auth.signToken(userId);
+        console.log("Token created successfully");
 
         res.cookie("token", token, {
             httpOnly: true,
@@ -83,7 +104,7 @@ loginUser = async (req, res) => {
         })
 
     } catch (err) {
-        console.error(err);
+        console.error("Login error:", err);
         res.status(500).send();
     }
 }
@@ -141,11 +162,25 @@ registerUser = async (req, res) => {
         console.log("passwordHash: " + passwordHash);
 
         const newUser = await dbManager.createUser({firstName, lastName, email, passwordHash});
-
-        console.log("new user saved: " + newUser._id);
+        console.log("new user saved:", newUser);
 
         // LOGIN THE USER
-        const token = auth.signToken(savedUser._id);
+        // Get the user ID based on database type
+        let userId;
+        if (newUser._id) {
+            // MongoDB
+            userId = newUser._id;
+        } else if (newUser.id) {
+            // PostgreSQL
+            userId = newUser.id;
+        } else {
+            throw new Error("Could not find user ID in new user");
+        }
+
+        console.log("User ID for new user:", userId);
+        
+        // FIX: Use the userId variable and correct variable name (newUser, not savedUser)
+        const token = auth.signToken(userId);
         console.log("token:" + token);
 
         await res.cookie("token", token, {
@@ -155,9 +190,9 @@ registerUser = async (req, res) => {
         }).status(200).json({
             success: true,
             user: {
-                firstName: savedUser.firstName,
-                lastName: savedUser.lastName,  
-                email: savedUser.email              
+                firstName: newUser.firstName, // Fixed: newUser, not savedUser
+                lastName: newUser.lastName,   // Fixed: newUser, not savedUser
+                email: newUser.email          // Fixed: newUser, not savedUser
             }
         })
 

@@ -7,6 +7,13 @@ class MongoDBManager extends DatabaseManager {
     constructor() {
         super();
         this.isConnected = false;
+        this.isInitialized = false;
+    }
+
+    async ensureInitialized() {
+        if (!this.isInitialized) {
+            await this.connect();
+        }
     }
 
     async connect() {
@@ -21,6 +28,7 @@ class MongoDBManager extends DatabaseManager {
             });
 
             this.isConnected = true;
+            this.isInitialized = true;
             console.log('MongoDB connected!');
         } catch (error) {
             console.log('MongoDB connection error:', error);
@@ -35,6 +43,7 @@ class MongoDBManager extends DatabaseManager {
 
         await mongoose.disconnect();
         this.isConnected = false;
+        this.isInitialized = false;
         console.log('MongoDB disconnected');
     }
 
@@ -69,23 +78,28 @@ class MongoDBManager extends DatabaseManager {
     }
 
     async createUser(userData) {
+        await this.ensureInitialized();
         const user = new User(userData);
         return await user.save();
     }
 
     async getUserById(id) {
+        await this.ensureInitialized();
         return await User.findById(id);
     }
 
     async getUserByEmail(email) {
+        await this.ensureInitialized();
         return await User.findOne({ email });
     }
 
     async updateUser(id, updateData) {
+        await this.ensureInitialized();
         return await User.findByIdAndUpdate(id, updateData, {new : true });
     }
 
     async deleteUser(id) {
+        await this.ensureInitialized();
         return await User.findByIdAndDelete(id);
     }
 
@@ -93,32 +107,39 @@ class MongoDBManager extends DatabaseManager {
     * Playlist methods 
     */
     async createPlaylist(playlistData) {
+        await this.ensureInitialized();
         const playlist = new Playlist(playlistData);
         return await playlist.save();
     }
 
     async getPlaylistById(id) {
+        await this.ensureInitialized();
         return await Playlist.findById(id);
     }
 
     async getPlaylistsByOwnerEmail(ownerEmail) {
+        await this.ensureInitialized();
         return await Playlist.find({ ownerEmail });
     }
 
     async updatePlaylist(id, updateData) {
+        await this.ensureInitialized();
         return await Playlist.findByIdAndUpdate(id, updateData, { new: true });
     }
 
     async deletePlaylist(id) {
+        await this.ensureInitialized();
         return await Playlist.findByIdAndDelete(id);
     }
 
     async getUserPlaylists(userId) {
+        await this.ensureInitialized();
         const user = await User.findById(userId).populate('playlists');
         return user ? user.playlists : [];
     }
 
     async getPlaylistPairsByOwnerEmail(ownerEmail) {
+        await this.ensureInitialized();
         const playlists = await Playlist.find({ ownerEmail });
         return playlists.map(playlist => ({
             _id: playlist._id,
