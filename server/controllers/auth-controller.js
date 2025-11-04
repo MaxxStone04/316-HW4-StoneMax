@@ -1,6 +1,6 @@
 const auth = require('../auth')
 const bcrypt = require('bcryptjs')
-const { createDatabaseManager } = require('../db/create-Database-Manager'); // Fixed import path
+const { createDatabaseManager } = require('../db/create-Database-Manager'); 
 const dbManager = createDatabaseManager();
 
 getLoggedIn = async (req, res) => {
@@ -33,8 +33,8 @@ getLoggedIn = async (req, res) => {
                 email: loggedInUser.email
             }
         })
-    } catch (err) {
-        console.log("err: " + err);
+    } catch (error) {
+        console.log("error: " + error);
         res.json(false);
     }
 }
@@ -45,48 +45,37 @@ loginUser = async (req, res) => {
         const { email, password } = req.body;
 
         if (!email || !password) {
-            return res
-                .status(400)
-                .json({ errorMessage: "Please enter all required fields." });
+            return res.status(400).json({ 
+                errorMessage: "Please enter all required fields." 
+            });
         }
 
         const existingUser = await dbManager.getUserByEmail(email);
-        console.log("existingUser: ", existingUser); // Use comma for better logging
+        console.log("existingUser: ", existingUser); 
         if (!existingUser) {
-            return res
-                .status(401)
-                .json({
-                    errorMessage: "Wrong email or password provided."
-                })
+            return res.status(401).json({
+                errorMessage: "Wrong email or password provided."
+            })
         }
 
-        console.log("provided password: " + password);
         const passwordCorrect = await bcrypt.compare(password, existingUser.passwordHash);
         if (!passwordCorrect) {
             console.log("Incorrect password");
-            return res
-                .status(401)
-                .json({
-                    errorMessage: "Wrong email or password provided."
-                })
+            return res.status(401).json({
+                errorMessage: "Wrong email or password provided."
+            })
         }
 
         // LOGIN THE USER
-        // Get the user ID based on database type
         let userId;
         if (existingUser._id) {
-            // MongoDB
             userId = existingUser._id;
         } else if (existingUser.id) {
-            // PostgreSQL
             userId = existingUser.id;
         } else {
             throw new Error("Could not find user ID");
         }
-
-        console.log("User ID to sign token:", userId);
         
-        // FIX: Pass the userId variable, not existingUser._id
         const token = auth.signToken(userId);
         console.log("Token created successfully");
 
@@ -119,32 +108,24 @@ logoutUser = async (req, res) => {
 }
 
 registerUser = async (req, res) => {
-    console.log("REGISTERING USER IN BACKEND");
     try {
         const { firstName, lastName, email, password, passwordVerify } = req.body;
         console.log("create user: " + firstName + " " + lastName + " " + email + " " + password + " " + passwordVerify);
         if (!firstName || !lastName || !email || !password || !passwordVerify) {
-            return res
-                .status(400)
-                .json({ errorMessage: "Please enter all required fields." });
+            return res.status(400).json({ 
+                errorMessage: "Please enter all required fields." 
+            });
         }
-        console.log("all fields provided");
         if (password.length < 8) {
-            return res
-                .status(400)
-                .json({
-                    errorMessage: "Please enter a password of at least 8 characters."
-                });
+            return res.status(400).json({
+                errorMessage: "Please enter a password of at least 8 characters."
+            });
         }
-        console.log("password long enough");
         if (password !== passwordVerify) {
-            return res
-                .status(400)
-                .json({
-                    errorMessage: "Please enter the same password twice."
-                })
+            return res.status(400).json({
+                errorMessage: "Please enter the same password twice."
+            })
         }
-        console.log("password and password verify match");
         const existingUser = await dbManager.getUserByEmail(email);
         console.log("existingUser: " + existingUser);
         if (existingUser) {
@@ -159,27 +140,20 @@ registerUser = async (req, res) => {
         const saltRounds = 10;
         const salt = await bcrypt.genSalt(saltRounds);
         const passwordHash = await bcrypt.hash(password, salt);
-        console.log("passwordHash: " + passwordHash);
 
         const newUser = await dbManager.createUser({firstName, lastName, email, passwordHash});
         console.log("new user saved:", newUser);
 
         // LOGIN THE USER
-        // Get the user ID based on database type
         let userId;
         if (newUser._id) {
-            // MongoDB
             userId = newUser._id;
         } else if (newUser.id) {
-            // PostgreSQL
             userId = newUser.id;
         } else {
             throw new Error("Could not find user ID in new user");
         }
 
-        console.log("User ID for new user:", userId);
-        
-        // FIX: Use the userId variable and correct variable name (newUser, not savedUser)
         const token = auth.signToken(userId);
         console.log("token:" + token);
 
@@ -190,13 +164,12 @@ registerUser = async (req, res) => {
         }).status(200).json({
             success: true,
             user: {
-                firstName: newUser.firstName, // Fixed: newUser, not savedUser
-                lastName: newUser.lastName,   // Fixed: newUser, not savedUser
-                email: newUser.email          // Fixed: newUser, not savedUser
+                firstName: newUser.firstName, 
+                lastName: newUser.lastName,   
+                email: newUser.email          
             }
         })
 
-        console.log("token sent");
 
     } catch (err) {
         console.error(err);
