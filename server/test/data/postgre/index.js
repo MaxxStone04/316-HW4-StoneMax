@@ -12,9 +12,7 @@ async function resetPostgreSQL() {
         
         console.log("PostgreSQL database reset successfully!");
         
-        setTimeout(async () => {
-            await dbManager.disconnect();
-        }, 1000);
+        await dbManager.disconnect();
         
     } catch (error) {
         console.error("Error resetting PostgreSQL database:", error);
