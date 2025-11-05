@@ -36,7 +36,6 @@ class PostgreSQLManager extends DatabaseManager {
 
         this.sequelize = new Sequelize(postgresConfig);
 
-
         this.User = this.sequelize.define('User', {
             id: {
                 type: DataTypes.INTEGER,
@@ -59,6 +58,10 @@ class PostgreSQLManager extends DatabaseManager {
             passwordHash: {
                 type: DataTypes.STRING,
                 allowNull: false
+            },
+            playlists: {
+                type: DataTypes.ARRAY(DataTypes.INTEGER),
+                defaultValue: []
             }
         }, {
             tableName: 'users',
@@ -98,9 +101,11 @@ class PostgreSQLManager extends DatabaseManager {
 
     async ensureInitialized() {
         if (!this.isInitialized) {
+
             if (!this.initializationPromise) {
                 this.initializationPromise = this.initializeModels();
             }
+            
             await this.initializationPromise;
         }
     }
@@ -140,7 +145,6 @@ class PostgreSQLManager extends DatabaseManager {
             await this.ensureInitialized();
             await this.Playlist.destroy({ where: {} });
             await this.User.destroy({ where: {} });
-            console.log('PostgreSQL Database cleared!');
         } catch (error) {
             console.error('Error clearing PostgreSQL Database:', error);
             throw error;
@@ -151,15 +155,45 @@ class PostgreSQLManager extends DatabaseManager {
         try {
             await this.clearDatabase();
 
+            const userMap = {};
+        
             for (let userData of testData.users) {
-                await this.createUser(userData);
+                const resetUser = {
+                    firstName: userData.firstName,
+                    lastName: userData.lastName,
+                    email: userData.email,
+                    passwordHash: userData.passwordHash,
+                    playlists: []
+                };
+            
+                const user = await this.User.create(resetUser);
+                userMap[userData.email] = user;
             }
 
-            for (let playlistData of testData.playlists) {
-                await this.createPlaylist(playlistData);
+            const playlistMap = {}; 
+        
+            for (let aPlaylist of testData.playlists) {
+                const resetPlaylist = {
+                    name: aPlaylist.name,
+                    ownerEmail: aPlaylist.ownerEmail,
+                    songs: aPlaylist.songs
+                };
+            
+                const playlist = await this.Playlist.create(resetPlaylist);
+                playlistMap[aPlaylist._id] = playlist.id;
             }
 
-            console.log('PostgreSQL Database successfully reset with data');
+            for (let aUser of testData.users) {
+                const user = userMap[aUser.email];
+
+                if (user && aUser.playlists) {
+                    const updatedPlaylists = aUser.playlists.map(oldId => playlistMap[oldId]).filter(id => id !== undefined); 
+                
+                    if (updatedPlaylists.length > 0) {
+                        await user.update({ playlists: updatedPlaylists });
+                    }
+                }
+            }
         } catch (error) {
             console.error('Error resetting PostgreSQL Database:', error);
             throw error;
@@ -202,10 +236,10 @@ class PostgreSQLManager extends DatabaseManager {
     }
 
 
-    async createUser(userData) {
+    async createUser(aUser) {
         await this.ensureInitialized();
-        const { _id, ...translatedData } = userData;
-        const user = await this.User.create(translatedData);
+        const { _id, ...convertedData } = aUser;
+        const user = await this.User.create(convertedData);
         return this.convertUser(user);
     }
 
@@ -250,10 +284,10 @@ class PostgreSQLManager extends DatabaseManager {
     /*
     * Playlist Methods
     */
-    async createPlaylist(playlistData) {
+    async createPlaylist(aPlaylist) {
         await this.ensureInitialized();
-        const { _id, ...translatedPlaylistData } = playlistData;
-        const playlist = await this.Playlist.create(translatedPlaylistData);
+        const { _id, ...convertedPlaylistData } = aPlaylist;
+        const playlist = await this.Playlist.create(convertedPlaylistData);
         return this.convertPlaylist(playlist);
     }
 
@@ -277,6 +311,7 @@ class PostgreSQLManager extends DatabaseManager {
         if (!playlist) {
             return null;
         }
+
         await playlist.update(updateData);
         await playlist.reload();
         return this.convertPlaylist(playlist);
@@ -289,25 +324,21 @@ class PostgreSQLManager extends DatabaseManager {
         if (!playlist) {
             return null;
         }
+
         await playlist.destroy();
         return this.convertPlaylist(playlist);
     }
 
     async getUserPlaylists(userId) {
         await this.ensureInitialized();
-        const user = await this.User.findByPk(userId, {
-            include: [this.Playlist]
-        });
+        const user = await this.User.findByPk(userId, {include: [this.Playlist]});
         return user ? user.Playlists.map(playlist => this.convertPlaylist(playlist)) : [];
     }
 
     async getPlaylistPairsByOwnerEmail(ownerEmail) {
         await this.ensureInitialized();
         try {
-            const playlists = await this.Playlist.findAll({
-                where: { ownerEmail },
-                attributes: ['id', 'name']
-            });
+            const playlists = await this.Playlist.findAll({where: { ownerEmail }, attributes: ['id', 'name']});
 
             return playlists.map(playlist => ({
                 _id: playlist.id.toString(),

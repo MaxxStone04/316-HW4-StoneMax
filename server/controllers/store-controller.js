@@ -30,7 +30,10 @@ createPlaylist = async (req, res) => {
 
         const user = await dbManager.getUserById(req.userId);
         
-        const updatedPlaylists = [...(user.playlists || []), playlist._id];
+        const playlistId = playlist._id || playlist.id;
+        const currentPlaylists = user.playlists || [];
+        const updatedPlaylists = [...currentPlaylists, playlistId];
+
         await dbManager.updateUser(req.userId, { playlists: updatedPlaylists });
 
         return res.status(201).json({
@@ -65,10 +68,18 @@ deletePlaylist = async (req, res) => {
         const user = await dbManager.getUserByEmail(playlist.ownerEmail);
         console.log("user._id: " + user._id);
         console.log("req.userId: " + req.userId);
+
+        const userIdString = user._id ? user._id.toString() : user.id.toString();
+        const reqUserIdString = req.userId.toString();
         
-        if (user._id === req.userId) {
+        if (userIdString == reqUserIdString) {
             
-            const updatedPlaylists = user.playlists.filter(pid => pid !== req.params.id);
+            const currentPlaylists = user.playlists || [];
+            const updatedPlaylists = currentPlaylists.filter(pid => {
+                const pidString = pid.toString();
+                const targetIdString = req.params.id.toString();
+                return pidString !== targetIdString;
+            });
             await dbManager.updateUser(user._id, { playlists: updatedPlaylists });
             
             await dbManager.deletePlaylist(req.params.id);
@@ -79,8 +90,8 @@ deletePlaylist = async (req, res) => {
                 errorMessage: "Authentication Error" 
             });
         }
-    } catch (err) {
-        console.error(err);
+    } catch (error) {
+        console.error("Error with deleting the playlist:", error);
         return res.status(400).json({ 
             errorMessage: 'Error deleting playlist' 
         });

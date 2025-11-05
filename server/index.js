@@ -27,18 +27,16 @@ app.use('/store', storeRouter)
 const { createDatabaseManager } = require('./db/create-Database-Manager');
 const dbManager = createDatabaseManager(process.env.DB_TYPE);
 
-async function serverStart() {
-    try {
-        await dbManager.connect();
-        
-        app.listen(PORT, () => console.log(`Playlister Server running on port ${PORT}`));
-    } catch (error) {
-        console.error('Database connection error:', error);
-        process.exit(1);
-    }
-}
 
-serverStart(); 
+dbManager.connect()
+    .then(() => {
+        console.log(`${process.env.DB_TYPE} database connected successfully`);
+        app.listen(PORT, () => console.log(`Playlister Server running on port ${PORT} using ${process.env.DB_TYPE}`))
+    })
+    .catch(error => {
+        console.error('Database connection error:', error)
+        process.exit(1)
+    })
 
 module.exports = { app, dbManager };
 

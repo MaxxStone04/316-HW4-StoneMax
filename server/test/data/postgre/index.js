@@ -3,14 +3,26 @@ const { createDatabaseManager } = require('../../../db/create-Database-Manager')
 const testData = require('../example-db-data.json');
 
 async function resetPostgreSQL() {
+    console.log("Resetting the PostgreSQL Database");
+    
     try {
         const dbManager = createDatabaseManager('postgresql');
-        await dbManager.connect();
-
-       await dbManager.resetDatabase(testData);
-       console.log("PostgreSQL Database successfully reset!");
-    } catch(error) {
-        console.error("Error resetting PostgreSQL Database:", error);
+        
+        await dbManager.initializeModels();
+        await dbManager.sequelize.authenticate();
+        await dbManager.sequelize.sync(); 
+        
+        dbManager.isConnected = true;
+        await dbManager.resetDatabase(testData);
+        
+        console.log("PostgreSQL database reset successfully!");
+        
+        setTimeout(async () => {
+            await dbManager.disconnect();
+        }, 1000);
+        
+    } catch (error) {
+        console.error("Error resetting PostgreSQL database:", error);
         process.exit(1);
     }
 }
@@ -20,4 +32,3 @@ if (require.main === module) {
 }
 
 module.exports = resetPostgreSQL;
-
