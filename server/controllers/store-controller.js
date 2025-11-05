@@ -26,9 +26,10 @@ createPlaylist = async (req, res) => {
     }
     
     try {
-        const playlist = await dbManager.createPlaylist(body);
-
         const user = await dbManager.getUserById(req.userId);
+
+        const playlistData = {...body, ownerEmail: user.email};
+        const playlist = await dbManager.createPlaylist(playlistData);
         
         const playlistId = playlist._id || playlist.id;
         const currentPlaylists = user.playlists || [];
@@ -68,11 +69,8 @@ deletePlaylist = async (req, res) => {
         const user = await dbManager.getUserByEmail(playlist.ownerEmail);
         console.log("user._id: " + user._id);
         console.log("req.userId: " + req.userId);
-
-        const userIdString = user._id ? user._id.toString() : user.id.toString();
-        const reqUserIdString = req.userId.toString();
         
-        if (userIdString == reqUserIdString) {
+        if (playlist.ownerEmail === user.email) {
             
             const currentPlaylists = user.playlists || [];
             const updatedPlaylists = currentPlaylists.filter(pid => {
@@ -116,11 +114,9 @@ getPlaylistById = async (req, res) => {
         }
 
         // DOES THIS LIST BELONG TO THIS USER?
-        const user = await dbManager.getUserByEmail(list.ownerEmail);
-        console.log("user._id: " + user._id);
-        console.log("req.userId: " + req.userId);
-        
-        if (user._id === req.userId) {
+        const user = await dbManager.getUserById(req.userId);
+
+        if (list.ownerEmail === user.email) {
             return res.status(200).json({ 
                 success: true, 
                 playlist: list 
@@ -153,9 +149,9 @@ getPlaylistPairs = async (req, res) => {
         const playlists = await dbManager.getPlaylistPairsByOwnerEmail(user.email);
         
         if (!playlists || playlists.length === 0) {
-            return res.status(404).json({ 
-                success: false, 
-                errorMessage: 'Playlists not found' 
+            return res.status(200).json({ 
+                success: true, 
+                idNamePairs: [] 
             })
         } else {
             return res.status(200).json({ 
@@ -222,8 +218,8 @@ updatePlaylist = async (req, res) => {
 
         // DOES THIS LIST BELONG TO THIS USER?
         const user = await dbManager.getUserByEmail(playlist.ownerEmail);
-        
-        if (user._id === req.userId) {
+
+        if (playlist.ownerEmail === user.email) {
 
             const updatedPlaylist = await dbManager.updatePlaylist(req.params.id, {
                 name: body.playlist.name,

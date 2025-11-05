@@ -21,8 +21,10 @@ class MongoDBManager extends DatabaseManager {
             return;
         }
 
+        const mongoConnect = process.env.MONGO_CONNECT || 'mongodb://127.0.0.1:27017/playlister';
+
         try {
-            await mongoose.connect(process.env.MONGO_CONNECT, {
+            await mongoose.connect(mongoConnect, {
                 useNewUrlParser: true,
                 useUnifiedTopology: true
             });
