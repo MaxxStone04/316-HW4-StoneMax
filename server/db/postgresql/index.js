@@ -154,6 +154,10 @@ class PostgreSQLManager extends DatabaseManager {
     async resetDatabase(testData) {
         try {
             await this.clearDatabase();
+            await this.initializeModels();
+            await this.sequelize.authenticate();
+            await this.sequelize.sync();
+            this.isConnected = true;
 
             const userMap = {};
         

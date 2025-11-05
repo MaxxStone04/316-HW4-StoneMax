@@ -8,11 +8,6 @@ async function resetPostgreSQL() {
     try {
         const dbManager = createDatabaseManager('postgresql');
         
-        await dbManager.initializeModels();
-        await dbManager.sequelize.authenticate();
-        await dbManager.sequelize.sync(); 
-        
-        dbManager.isConnected = true;
         await dbManager.resetDatabase(testData);
         
         console.log("PostgreSQL database reset successfully!");
