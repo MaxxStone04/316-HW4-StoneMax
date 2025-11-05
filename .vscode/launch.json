@@ -6,7 +6,7 @@
       "request": "launch",
       "name": "Debug Vitest",
       "program": "${workspaceFolder}/server/node_modules/vitest/vitest.mjs",
-      "args": ["run"],
+      "args": ["run", "test/database.test.js"],
       "autoAttachChildProcesses": true,
       "smartStep": true,
       "skipFiles": ["<node_internals>/**"],
